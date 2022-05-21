@@ -5,9 +5,6 @@ import 'package:flutter/material.dart';
 
 void main() {
   runApp(BytebankApp());
-  save(Contact(0, 'Guilherme', 1000)).then((id) {
-    findAll().then((value) => debugPrint(value.toString()));
-  });
 }
 
 class BytebankApp extends StatelessWidget {
