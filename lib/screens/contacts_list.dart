@@ -1,17 +1,18 @@
-import 'package:bytebank/database/app_database.dart';
 import 'package:bytebank/screens/contact_form.dart';
 import 'package:flutter/material.dart';
 
+import '../database/dao/contact_dao.dart';
 import '../models/contact.dart';
 
 class ContactsList extends StatefulWidget {
-  ContactsList({Key? key}) : super(key: key);
+  const ContactsList({Key? key}) : super(key: key);
 
   @override
   State<ContactsList> createState() => _ContactsListState();
 }
 
 class _ContactsListState extends State<ContactsList> {
+  final ContactDao _dao = ContactDao();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +22,7 @@ class _ContactsListState extends State<ContactsList> {
       ),
       body: FutureBuilder<List<Contact>>(
           initialData: const [],
-          future: findAll(),
+          future: _dao.findAll(),
           builder: ((context, snapshot) {
             switch (snapshot.connectionState) {
               // A execução do Future ainda não foi inicializada
@@ -39,7 +40,6 @@ class _ContactsListState extends State<ContactsList> {
                     ],
                   ),
                 );
-                break;
               // Tem dados disponivel porém não foi finalizado o Future (pedaços de um carregando assíncrono)
               case ConnectionState.active:
                 break;
@@ -52,7 +52,6 @@ class _ContactsListState extends State<ContactsList> {
                     return _ContactItem(contact);
                   },
                 );
-                break;
             }
 
             return const Text('Unknow error');
@@ -72,7 +71,7 @@ class _ContactsListState extends State<ContactsList> {
 
 class _ContactItem extends StatelessWidget {
   final Contact contact;
-  _ContactItem(this.contact);
+  const _ContactItem(this.contact);
   @override
   Widget build(BuildContext context) {
     return Card(
