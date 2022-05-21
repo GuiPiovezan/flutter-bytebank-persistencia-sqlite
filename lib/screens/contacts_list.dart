@@ -1,10 +1,12 @@
 import 'package:bytebank/screens/contact_form.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+
+import '../models/contact.dart';
 
 class ContactsList extends StatelessWidget {
-  const ContactsList({Key? key}) : super(key: key);
+  ContactsList({Key? key}) : super(key: key);
+
+  final List<Contact> contacts = [];
 
   @override
   Widget build(BuildContext context) {
@@ -13,21 +15,12 @@ class ContactsList extends StatelessWidget {
         title: const Text('Contacts'),
         backgroundColor: Theme.of(context).primaryColor,
       ),
-      body: ListView(
-        children: [
-          Card(
-            child: ListTile(
-              title: Text(
-                'Guilherme',
-                style: TextStyle(fontSize: 24.0),
-              ),
-              subtitle: Text(
-                '1000',
-                style: TextStyle(fontSize: 16.0),
-              ),
-            ),
-          )
-        ],
+      body: ListView.builder(
+        itemCount: contacts.length,
+        itemBuilder: (context, index) {
+          final Contact contact = contacts[index];
+          return _ContactItem(contact);
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -37,6 +30,26 @@ class ContactsList extends StatelessWidget {
               .then((value) => debugPrint(value.toString()));
         },
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class _ContactItem extends StatelessWidget {
+  final Contact contact;
+  _ContactItem(this.contact);
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        title: Text(
+          contact.name,
+          style: const TextStyle(fontSize: 24.0),
+        ),
+        subtitle: Text(
+          contact.accountNumber.toString(),
+          style: const TextStyle(fontSize: 16.0),
+        ),
       ),
     );
   }
