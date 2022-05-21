@@ -15,16 +15,42 @@ class ContactsList extends StatelessWidget {
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: FutureBuilder<List<Contact>>(
+          initialData: const [],
           future: findAll(),
           builder: ((context, snapshot) {
-            List<Contact>? contacts = snapshot.data;
-            return ListView.builder(
-              itemCount: contacts!.length,
-              itemBuilder: (context, index) {
-                final Contact contact = contacts[index];
-                return _ContactItem(contact);
-              },
-            );
+            switch (snapshot.connectionState) {
+              // A execução do Future ainda não foi inicializada
+              case ConnectionState.none:
+                break;
+              // A execução do Future está carregando
+              case ConnectionState.waiting:
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: const <Widget>[
+                      CircularProgressIndicator(),
+                      Text('Loading'),
+                    ],
+                  ),
+                );
+                break;
+              // Tem dados disponivel porém não foi finalizado o Future (pedaços de um carregando assíncrono)
+              case ConnectionState.active:
+                break;
+              case ConnectionState.done:
+                List<Contact>? contacts = snapshot.data;
+                return ListView.builder(
+                  itemCount: contacts!.length,
+                  itemBuilder: (context, index) {
+                    final Contact contact = contacts[index];
+                    return _ContactItem(contact);
+                  },
+                );
+                break;
+            }
+
+            return const Text('Unknow error');
           })),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
